@@ -1,6 +1,12 @@
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
+import { redirect, RedirectType } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const { isAuthenticated } = await auth();
+
+  if (isAuthenticated) return redirect("/chat", RedirectType.replace);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-b from-rose-50 to-pink-50 dark:from-zinc-900 dark:to-black font-sans">
       <main className="flex flex-col items-center justify-center text-center px-6 sm:px-12">
