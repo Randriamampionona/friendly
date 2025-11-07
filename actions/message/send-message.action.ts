@@ -16,6 +16,8 @@ interface SendMessageInput {
   asset?: string;
 }
 
+const CHAT_COLLECTION = process.env.NEXT_PUBLIC_CHAT_COLLECTION!;
+
 export async function sendMessageAction({
   sender_id,
   text,
@@ -37,7 +39,10 @@ export async function sendMessageAction({
   }
 
   // ?? Save message in 'chats' collection
-  const chatsRef = collection(db, "chats");
+  const chatsRef = collection(
+    db,
+    process.env.NODE_ENV === "production" ? CHAT_COLLECTION : "chats--dev"
+  );
   const docRef = await addDoc(
     chatsRef,
     asset

@@ -6,6 +6,8 @@ import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import MessageItem from "./message-item";
 import { TChat, TMessage } from "@/typing";
 
+const CHAT_COLLECTION = process.env.NEXT_PUBLIC_CHAT_COLLECTION!;
+
 export default function ChatView() {
   const [messages, setMessages] = useState<TChat>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,7 +16,13 @@ export default function ChatView() {
   // 🔹 Listen for messages in realtime
   useEffect(() => {
     setIsLoading(true);
-    const q = query(collection(db, "chats"), orderBy("timestamp", "asc"));
+    const q = query(
+      collection(
+        db,
+        process.env.NODE_ENV === "production" ? CHAT_COLLECTION : "chats--dev"
+      ),
+      orderBy("timestamp", "asc")
+    );
 
     const unsubscribe = onSnapshot(
       q,
